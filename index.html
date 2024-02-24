@@ -73,6 +73,24 @@
                 isTokenExpired();
             }
     
+    
+            function settings() {
+                const token = localStorage.getItem('jwt');
+                if (token) {
+                    axios.get('/api/settings', {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    }).then(res => {
+                        if (res && res.data && res.data.success) {
+                            document.querySelector('h1.row').innerHTML = 'Settings';
+                            document.querySelector('main').innerHTML = res.data.myContent;
+                            history.pushState('', '', '/settings');
+                        }
+                    });
+                }
+                isTokenExpired();
+            }
 
             function handleTokenExpiration() {
                 localStorage.removeItem('jwt');
@@ -96,24 +114,14 @@
                     }, 30000);
                 }
             }
-    
-            function settings() {
+
+            function onLoad(){
                 const token = localStorage.getItem('jwt');
-                if (token) {
-                    axios.get('/api/settings', {
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        }
-                    }).then(res => {
-                        if (res && res.data && res.data.success) {
-                            document.querySelector('h1.row').innerHTML = 'Settings';
-                            document.querySelector('main').innerHTML = res.data.myContent;
-                            history.pushState('', '', '/settings');
-                        }
-                    });
+                if(token){
+                    getDashboard();
                 }
-                isTokenExpired();
             }
+            onLoad();
             isTokenExpired();
         
     </script>
